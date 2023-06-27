@@ -1,33 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from './components/Header'
+
+import { Route, Routes, Navigate } from "react-router-dom"
+import NotFound from "./pages/_errors/NotFound"
+
+import './App.scss'
+import ShowInvoices from './pages/invoices/ShowInvoices'
+import ShowItems from './pages/items/ShowItems'
+import ShowCustomers from './pages/customers/ShowCustomers'
+import ShowAddresses from './pages/addresses/ShowAddresses'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Navigate to="/invoices" replace />}></Route>
+
+        <Route path="/invoices" element={<ShowInvoices />}></Route>
+        <Route path="/items" element={<ShowItems />}></Route>
+        <Route path="/customers" element={<ShowCustomers />}></Route>
+        <Route path="/addresses" element={<ShowAddresses />}></Route>
+
+        <Route path="*" element={<NotFound />}></Route>
+      </Routes>
     </>
   )
 }

@@ -1,0 +1,15 @@
+.app-header {
+  .app-menu-item {
+    @apply uppercase mx-2 text-sm text-gray-600 tracking-wide
+           px-4 py-2 rounded cursor-pointer font-bold
+           transition-all ease-in;
+
+    &:hover {
+      @apply bg-gray-200;
+    }
+
+    &.active {
+      @apply text-purple-900;
+    }
+  }
+}
