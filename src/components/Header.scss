@@ -1,7 +1,7 @@
 .app-header {
   .app-menu-item {
     @apply uppercase mx-2 text-sm text-gray-600 tracking-wide
-           px-2 py-1 rounded cursor-pointer font-bold
+           px-2 py-1 rounded cursor-pointer font-semibold
            border border-transparent;
 
     &:hover {
