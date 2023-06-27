@@ -1,11 +1,11 @@
 .app-header {
   .app-menu-item {
     @apply uppercase mx-2 text-sm text-gray-600 tracking-wide
-           px-4 py-2 rounded cursor-pointer font-bold
-           transition-all ease-in;
+           px-2 py-1 rounded cursor-pointer font-bold
+           border border-transparent;
 
     &:hover {
-      @apply bg-gray-200;
+      @apply border-gray-500 border-dashed;
     }
 
     &.active {
