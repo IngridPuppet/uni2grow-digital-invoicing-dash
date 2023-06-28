@@ -38,6 +38,8 @@ export default function ManageItem() {
   }
 
   const onSubmit: SubmitHandler<Item> = (data) => {
+    const errorMessage = 'Oops, something went wrong!\n'
+                       + 'Some fields may be required unique.'
     setLoading(true)
 
     if (id == null) {
@@ -47,11 +49,9 @@ export default function ManageItem() {
           if (response.status == 201) {
             toast.success('Successfully created!')
             navigate(`/items/${response.data.id}`)
-          } else {
-            toast.error('Oops, something went wrong!')
           }
         })
-        .catch(() => { toast.error('Oops, something went wrong!') })
+        .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading(false) })
     } else {
       // Send an update request
@@ -60,28 +60,28 @@ export default function ManageItem() {
           if (response.status == 200) {
             toast.success('Successfully updated!')
             setEditable(false); load()
-          } else {
-            toast.error('Oops, something went wrong!')
           }
         })
-        .catch(() => { toast.error('Oops, something went wrong!') })
+        .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading(false) })
     }
   }
 
   const handleDelete = () => {
-    if (confirm('Deletion is irreversible. Proceed?')) {
-      // Send an update request
+    const errorMessage = 'You should probably not delete this item.'
+
+    if (confirm('Deletion is irreversible. Do you really want to proceed?')) {
+      setLoading(true)
+
+      // Send a delete request
       axios.delete(`/items/${id}`)
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully deleted!')
             navigate(`/items`)
-          } else {
-            toast.error('Oops, something went wrong!')
           }
         })
-        .catch(() => { toast.error('Oops, something went wrong!') })
+        .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading(false) })
     }
   }
@@ -124,7 +124,9 @@ export default function ManageItem() {
                 <input type="text" className="app-field-control"
                 {...register('name', {required: true})} />
 
-                { errors.name && <p>This field is required.</p> }
+                { errors.name && <p className="app-field-error">
+                  This field is required.
+                </p> }
               </div>
 
               <div className="app-field">
@@ -132,7 +134,9 @@ export default function ManageItem() {
                 <input type="number" step="0.01" className="app-field-control"
                 {...register('price', {required: true, min: 0})} />
 
-                { errors.price && <p>This field is required and must be positive.</p> }
+                { errors.price && <p className="app-field-error">
+                  This field is required and must be positive.
+                </p> }
               </div>
 
             </div>

@@ -15,6 +15,7 @@ function App() {
   return (
     <>
       <Toaster
+        containerClassName="app-toaster"
         position="top-right"
         reverseOrder={false}
       />
