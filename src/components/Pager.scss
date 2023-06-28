@@ -1,0 +1,6 @@
+.app-pager {
+  button {
+    @apply px-4 py-2 bg-gray-100 rounded hover:bg-purple-700 hover:text-white
+           transition-all ease-in shadow-sm;
+  }
+}
