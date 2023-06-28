@@ -10,14 +10,11 @@ import '../ShowEntities.scss'
 
 export default function ShowItems() {
   const [key, setKey] = useState('')
-  const [isLoading, setLoading] = useState(false)
   const [paging, setPaging] = useState({curr: 0, currSize: 0, total: 0})
 
   const [items, setItems] = useStore.items()
 
   const load = (page = 0, size = 20) => {
-    setLoading(true)
-
     axios.get(`/items/paginated?key=${key}&page=${page}&size=${size}`)
       .then((response) => {
         if (response.status == 200) {
@@ -26,9 +23,6 @@ export default function ShowItems() {
           setItems((s: any) => ({...s, [page]: data.content}))
           setPaging({ curr: page, currSize: data.numberOfElements, total: data.totalPages })
         }
-      })
-      .finally(() => {
-        setLoading(false)
       })
   }
 
@@ -44,7 +38,7 @@ export default function ShowItems() {
           <div className="app-controls mb-8">
             <div className="app-left">
               <button type="button">
-                Create an item <span className="ml-3"><FaArrowRightLong /></span>
+                Add an item <span className="ml-3"><FaArrowRightLong /></span>
               </button>
             </div>
             <form className="app-search-form" onSubmit={(e) => {load(); e.preventDefault()}}>
@@ -55,14 +49,14 @@ export default function ShowItems() {
           </div>
 
           {
-            (paging.currSize == 0) && (isLoading || items[paging.curr] == undefined) ?
+            (items[paging.curr] == undefined) ?
               <>
                 <div className="font-brand fixed-center text-3xl">Loading...</div>
               </>
               :
               <>
                 {
-                  paging.currSize == 0 ?
+                  (items[paging.curr].length == 0) ?
                     <>
                       <div className="font-brand fixed-center text-3xl">Empty</div>
                     </>

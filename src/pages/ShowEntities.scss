@@ -11,7 +11,6 @@
 .app-controls {
   @apply flex items-center space-x-4 md:space-x-20;
 
-
   .app-left {
     button {
       @apply flex items-center px-4 py-2 rounded bg-purple-700 text-gray-50
@@ -62,4 +61,21 @@
 
 .pager-container {
   @apply text-sm py-2;
+}
+
+.app-unready {
+
+  .app-controls {
+    @apply space-x-0;
+    .app-left {
+      @apply hidden;
+    }
+  }
+
+  .table-super-container {
+    table tbody tr {
+      @apply hover:bg-white cursor-default #{!important};
+    }
+  }
+
 }
