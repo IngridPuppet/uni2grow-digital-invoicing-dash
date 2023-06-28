@@ -13,6 +13,11 @@ type PagerProps = {
 }
 
 export default function Pager ({paging, load}: PagerProps) {
+  const pagerLoad = (page: number) => {
+    load(page)
+    window.scrollTo(0, 0)
+  }
+
   return (
     <>
       {
@@ -20,7 +25,7 @@ export default function Pager ({paging, load}: PagerProps) {
           <div className="app-pager my-4 flex items-center justify-between">
             <div className="flex w-20">
               <button type="button" className="mr-auto" hidden={paging.curr == 0}
-                      onClick={() => load(paging.curr - 1)}>
+                      onClick={() => pagerLoad(paging.curr - 1)}>
                 <FaArrowLeftLong />
               </button>
             </div>
@@ -29,7 +34,7 @@ export default function Pager ({paging, load}: PagerProps) {
 
             <div className="flex w-20">
               <button type="button" className="ml-auto" hidden={paging.curr + 1 == paging.total}
-                      onClick={() => load(paging.curr + 1)}>
+                      onClick={() => pagerLoad(paging.curr + 1)}>
                 <FaArrowRightLong />
               </button>
             </div>

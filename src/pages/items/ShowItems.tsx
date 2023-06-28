@@ -33,7 +33,7 @@ export default function ShowItems() {
   }
 
   useEffect(() => {
-    setTimeout(load, 0e3)
+    setTimeout(load, 300)
   }, [])
 
   return (
@@ -48,7 +48,7 @@ export default function ShowItems() {
               </button>
             </div>
             <form className="app-search-form" onSubmit={(e) => {load(); e.preventDefault()}}>
-              <input type="text" name="key" placeholder="Search by name"
+              <input type="text" placeholder="Search by name"
                      onChange={(e) => setKey(e.target.value)} />
               <button type="submit"><FaMagnifyingGlass /></button>
             </form>
@@ -81,7 +81,7 @@ export default function ShowItems() {
                               {
                                 items[paging.curr].map((item: Item) =>
                                   <tr key={item.id}>
-                                    <td scope="row" className="row-lead">{ item.name }</td>
+                                    <td className="row-lead">{ item.name }</td>
                                     <td>${ item.price }</td>
                                   </tr>
                                 )
@@ -90,7 +90,7 @@ export default function ShowItems() {
                           </table>
                         </div>
                       </div>
-                      <div className="pager-container text-sm">
+                      <div className="pager-container">
                         <Pager paging={paging} load={load} />
                       </div>
                     </>

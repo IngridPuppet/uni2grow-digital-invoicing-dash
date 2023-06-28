@@ -1,9 +1,15 @@
 .fixed-center {
-  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  @apply my-32 text-center;
+}
+
+@media screen and (min-height: 600px) {
+  .fixed-center {
+    @apply my-0 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
 }
 
 .app-controls {
-  @apply flex items-center space-x-20;
+  @apply flex items-center space-x-4 md:space-x-20;
 
 
   .app-left {
@@ -17,7 +23,7 @@
     @apply flex-grow flex items-center border-purple-700 border-2 rounded;
 
     input {
-      @apply w-full h-10 rounded-l p-2 outline-none placeholder-gray-700;
+      @apply w-full h-10 rounded-l py-2 px-4 outline-none placeholder-gray-700;
     }
 
     button {
@@ -52,4 +58,8 @@
       }
     }
   }
+}
+
+.pager-container {
+  @apply text-sm py-2;
 }
