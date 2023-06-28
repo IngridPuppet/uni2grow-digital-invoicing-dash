@@ -44,7 +44,7 @@ export default function ShowAddresses() {
           <div className="app-controls mb-8">
             <div className="app-left">
               <button type="button">
-                Add a address <span className="ml-3"><FaArrowRightLong /></span>
+                Add an address <span className="ml-3"><FaArrowRightLong /></span>
               </button>
             </div>
             <form className="app-search-form" onSubmit={handleSubmit}>

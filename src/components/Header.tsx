@@ -1,6 +1,6 @@
 import './Header.scss'
 
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 
 export default function Header () {
   return (
@@ -8,9 +8,9 @@ export default function Header () {
       <div className="app-header container mx-auto px-4">
         <div className="flex items-center rounded px-4 py-4 mt-4 bg-gray-100">
 
-          <div className="text-2xl font-brand font-bold text-purple-900">
+          <Link to="/" className="text-2xl font-brand font-bold text-purple-900" reloadDocument>
             DigitalInvoicing.
-          </div>
+          </Link>
 
           <div className="hidden md:flex items-center app-menu ml-8">
             <NavLink to="/invoices" className="app-menu-item">

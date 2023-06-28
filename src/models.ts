@@ -21,11 +21,19 @@ export interface Address {
   zipCode: string
 }
 
-export interface Page<T> {
-  content: T[]
-  pageable: any
-  number: number
-  numberOfElements: number
-  totalPages: number
-  totalElements: number
+export interface RelInvoiceItem {
+  id: number
+  item: Item
+  quantity: number
+  priceOfRecord: number
+}
+
+export interface Invoice {
+  id: number
+  number: string
+  total: number
+  issueDate: string
+  customer: Customer
+  billingAddress: Address
+  relInvoiceItems: RelInvoiceItem[]
 }

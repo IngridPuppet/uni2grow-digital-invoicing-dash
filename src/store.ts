@@ -4,4 +4,5 @@ export const { useStore } = createStore({
   items: {},
   customers: {},
   addresses: {},
+  invoices: {},
 })
