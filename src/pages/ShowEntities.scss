@@ -2,9 +2,33 @@
   @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
 }
 
+.app-controls {
+  @apply flex items-center space-x-20;
+
+
+  .app-left {
+    button {
+      @apply flex items-center px-4 py-2 rounded bg-purple-700 text-gray-50
+             transition-all ease-in shadow-sm whitespace-nowrap hover:scale-105;
+    }
+  }
+
+  .app-search-form {
+    @apply flex-grow flex items-center border-purple-700 border-2 rounded;
+
+    input {
+      @apply w-full h-10 rounded-l p-2 outline-none placeholder-gray-700;
+    }
+
+    button {
+      @apply bg-purple-700 text-gray-50 px-4 h-10;
+    }
+  }
+}
+
 .table-super-container {
   .table-container {
-    @apply relative overflow-x-auto border border-black rounded-lg;
+    @apply relative overflow-x-auto border border-black rounded;
 
     table {
       @apply w-full text-sm text-left text-gray-700;

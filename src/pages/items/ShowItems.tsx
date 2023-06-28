@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Item } from "@/models"
+import { FaArrowRightLong, FaMagnifyingGlass } from 'react-icons/fa6'
 
 import Pager from "@/components/Pager"
 
@@ -39,6 +40,20 @@ export default function ShowItems() {
     <>
       <main className="container mx-auto p-8">
         <div className="max-w-3xl mx-auto">
+
+          <div className="app-controls mb-8">
+            <div className="app-left">
+              <button type="button">
+                Create an item <span className="ml-3"><FaArrowRightLong /></span>
+              </button>
+            </div>
+            <form className="app-search-form" onSubmit={(e) => {load(); e.preventDefault()}}>
+              <input type="text" name="key" placeholder="Search by name"
+                     onChange={(e) => setKey(e.target.value)} />
+              <button type="submit"><FaMagnifyingGlass /></button>
+            </form>
+          </div>
+
           {
             (paging.currSize == 0) && (isLoading || items[paging.curr] == undefined) ?
               <>
