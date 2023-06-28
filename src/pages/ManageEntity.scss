@@ -1,7 +1,13 @@
 .app-show-entity {
 
   .app-controls {
-    @apply flex items-end text-gray-700;
+    @apply flex items-center text-gray-700;
+
+    a {
+      @apply flex items-center whitespace-nowrap px-4 py-2 rounded text-gray-700
+               bg-gray-100 shadow-sm transition-all ease-in font-semibold
+               hover:bg-purple-700 hover:text-gray-50;
+    }
 
     .app-right {
       @apply ml-auto flex items-center;
@@ -31,13 +37,10 @@
 
         label {
           @apply block text-sm mb-1 text-gray-700;
-          &::before {
-            content: '-> ';
-          }
         }
 
         input.app-field-control {
-          @apply p-2 bg-white rounded border border-gray-500
+          @apply p-2 rounded border border-gray-500
                  text-sm focus:outline-none focus:ring w-full focus:ring-purple-300
                  ease-linear transition-all duration-150;
         }
@@ -63,9 +66,15 @@
     }
   }
 
+  &:not(.app-showing) {
+    form .app-field-control {
+      @apply bg-white;
+    }
+  }
+
   &.app-showing {
     form .app-field-control {
-      @apply bg-transparent pointer-events-none #{!important};
+      @apply bg-transparent pointer-events-none;
     }
   }
 

@@ -1,6 +1,6 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { FaTrashCan, FaPencil, FaFloppyDisk } from 'react-icons/fa6'
+import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong } from 'react-icons/fa6'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Item } from '@/models'
 
@@ -88,13 +88,14 @@ export default function ManageItem() {
 
   return (
     <>
-      <main className={"container mx-auto p-8 app-show-entity"
-                      + " " + (id != null ? (editable ? "app-editable" : "app-showing") : "app-creation")}>
+      <main className={"container mx-auto p-8 app-show-entity " +
+                       (id != null ? (editable ? "app-editable" : "app-showing") : "app-creation")}>
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            <div className="hidden md:block mt-2">
-              { id ? (editable ? "Editing " : "Showing ") : "Creating " }
+            <Link to="/items"><FaArrowLeftLong /></Link>
+            <div className="hidden md:block ml-4">
+              { id ? (editable ? "Editing " : "Showing ") : "Adding an " }
               item
               { id ? ` #${id}` : "" }
             </div>
