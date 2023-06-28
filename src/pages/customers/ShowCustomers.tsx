@@ -79,9 +79,9 @@ export default function ShowCustomers() {
                                 customers[paging.curr].map((customer: Customer) =>
                                   <tr key={customer.id}>
                                     <td className="row-lead">{ customer.name }</td>
-                                    <td>{ customer.email }</td>
-                                    <td>{ customer.phone }</td>
-                                    <td>{ handyAddress(customer.address) }</td>
+                                    <td>{ customer.email ?? "N/A" }</td>
+                                    <td>{ customer.phone ?? "N/A" }</td>
+                                    <td>{ handyAddress(customer.address) ?? "N/A" }</td>
                                   </tr>
                                 )
                               }
