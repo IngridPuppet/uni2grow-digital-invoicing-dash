@@ -18,8 +18,8 @@ export default function Pager ({paging, load}: PagerProps) {
       {
         (paging.total > 0 && paging.currSize > 0) &&
           <div className="app-pager my-4 flex items-center justify-between">
-            <div>
-              <button type="button" hidden={paging.curr == 0}
+            <div className="flex w-20">
+              <button type="button" className="mr-auto" hidden={paging.curr == 0}
                       onClick={() => load(paging.curr - 1)}>
                 <FaArrowLeftLong />
               </button>
@@ -27,8 +27,8 @@ export default function Pager ({paging, load}: PagerProps) {
 
             <div>Showing page <span className="font-bold">{paging.curr + 1}</span> of {paging.total}</div>
 
-            <div>
-              <button type="button" hidden={paging.curr + 1 == paging.total}
+            <div className="flex w-20">
+              <button type="button" className="ml-auto" hidden={paging.curr + 1 == paging.total}
                       onClick={() => load(paging.curr + 1)}>
                 <FaArrowRightLong />
               </button>
