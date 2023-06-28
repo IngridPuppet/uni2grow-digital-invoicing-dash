@@ -1,81 +1,85 @@
-.fixed-center {
-  @apply my-32 text-center;
-}
+.app-show-entities {
 
-@media screen and (min-height: 600px) {
   .fixed-center {
-    @apply my-0 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-  }
-}
-
-.app-controls {
-  @apply flex items-center space-x-4 md:space-x-20;
-
-  .app-left {
-    button {
-      @apply flex items-center px-4 py-2 rounded bg-purple-700 text-gray-50
-             transition-all ease-in shadow-sm whitespace-nowrap hover:scale-105;
-    }
+    @apply my-32 text-center;
   }
 
-  .app-search-form {
-    @apply flex-grow flex items-center border-purple-700 border-2 rounded;
-
-    input {
-      @apply w-full h-10 rounded-l py-2 px-4 outline-none placeholder-gray-700;
-    }
-
-    button {
-      @apply bg-purple-700 text-gray-50 px-4 h-10;
+  @media screen and (min-height: 600px) {
+    .fixed-center {
+      @apply my-0 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
     }
   }
-}
-
-.table-super-container {
-  .table-container {
-    @apply relative overflow-x-auto border border-black rounded;
-
-    table {
-      @apply w-full text-sm text-left text-gray-700;
-
-      thead {
-        @apply text-xs text-gray-50 uppercase bg-black;
-      }
-
-      th, td {
-        @apply px-6 py-4;
-      }
-
-      tbody {
-        tr {
-          @apply bg-white border-b hover:bg-gray-50 cursor-pointer;
-        }
-
-        td.row-lead {
-          @apply font-medium text-gray-900 whitespace-nowrap;
-        }
-      }
-    }
-  }
-}
-
-.pager-container {
-  @apply text-sm py-2;
-}
-
-.app-unready {
 
   .app-controls {
-    @apply space-x-0;
+    @apply flex items-center space-x-4 md:space-x-20;
+
     .app-left {
-      @apply hidden;
+      button {
+        @apply flex items-center px-4 py-2 rounded bg-purple-700 text-gray-50
+              transition-all ease-in shadow-sm whitespace-nowrap hover:scale-105;
+      }
+    }
+
+    .app-search-form {
+      @apply flex-grow flex items-center border-purple-700 border-2 rounded;
+
+      input {
+        @apply w-full h-10 rounded-l py-2 px-4 outline-none placeholder-gray-700;
+      }
+
+      button {
+        @apply bg-purple-700 text-gray-50 px-4 h-10;
+      }
     }
   }
 
   .table-super-container {
-    table tbody tr {
-      @apply hover:bg-white cursor-default #{!important};
+    .table-container {
+      @apply relative overflow-x-auto border border-black rounded;
+
+      table {
+        @apply w-full text-sm text-left text-gray-700;
+
+        thead {
+          @apply text-xs text-gray-50 uppercase bg-black;
+        }
+
+        th, td {
+          @apply px-6 py-4;
+        }
+
+        tbody {
+          tr {
+            @apply bg-white border-b hover:bg-gray-50 cursor-pointer;
+          }
+
+          td.row-lead {
+            @apply font-medium text-gray-900 whitespace-nowrap;
+          }
+        }
+      }
     }
+  }
+
+  .pager-container {
+    @apply text-sm py-2;
+  }
+
+  .app-unready {
+
+    .app-controls {
+      @apply space-x-0;
+      .app-left {
+        @apply hidden;
+      }
+    }
+
+    .table-super-container {
+      table tbody tr {
+        @apply hover:bg-white cursor-default #{!important};
+      }
+    }
+
   }
 
 }

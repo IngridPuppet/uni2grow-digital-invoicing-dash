@@ -1,4 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Item } from "@/models"
@@ -9,6 +10,8 @@ import Pager from "@/components/Pager"
 import '../ShowEntities.scss'
 
 export default function ShowItems() {
+  const navigate = useNavigate()
+
   const [key, setKey] = useState('')
   const [paging, setPaging] = useState({curr: 0, currSize: 0, total: 0})
 
@@ -38,7 +41,7 @@ export default function ShowItems() {
 
   return (
     <>
-      <main className="container mx-auto p-8">
+      <main className="container mx-auto p-8 app-show-entities">
         <div className="max-w-3xl mx-auto">
 
           <div className="app-controls mb-8">
@@ -80,7 +83,7 @@ export default function ShowItems() {
                             <tbody>
                               {
                                 items[paging.curr].map((item: Item) =>
-                                  <tr key={item.id}>
+                                  <tr key={item.id} onClick={() => navigate(`/items/${item.id}`)}>
                                     <td className="row-lead">{ item.name }</td>
                                     <td>${ item.price }</td>
                                   </tr>

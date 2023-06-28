@@ -39,8 +39,8 @@ export default function ShowCustomers() {
 
   return (
     <>
-      <main className="container mx-auto p-8 app-unready">
-        <div className="max-w-5xl mx-auto">
+      <main className="container mx-auto p-8 app-show-entities">
+        <div className="max-w-5xl mx-auto app-unready">
 
           <div className="app-controls mb-8">
             <div className="app-left">

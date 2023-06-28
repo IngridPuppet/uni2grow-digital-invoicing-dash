@@ -6,6 +6,7 @@ import NotFound from "./pages/_errors/NotFound"
 import './App.scss'
 import ShowInvoices from './pages/invoices/ShowInvoices'
 import ShowItems from './pages/items/ShowItems'
+import ShowItem from './pages/items/ShowItem'
 import ShowCustomers from './pages/customers/ShowCustomers'
 import ShowAddresses from './pages/addresses/ShowAddresses'
 
@@ -18,7 +19,10 @@ function App() {
         <Route path="/" element={<Navigate to="/invoices" replace />}></Route>
 
         <Route path="/invoices" element={<ShowInvoices />}></Route>
+
         <Route path="/items" element={<ShowItems />}></Route>
+        <Route path="/items/:id" element={<ShowItem />}></Route>
+
         <Route path="/customers" element={<ShowCustomers />}></Route>
         <Route path="/addresses" element={<ShowAddresses />}></Route>
 

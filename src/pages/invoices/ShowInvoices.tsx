@@ -39,7 +39,7 @@ export default function ShowInvoices() {
 
   return (
     <>
-      <main className="container mx-auto p-8">
+      <main className="container mx-auto p-8 app-show-entities">
         <div className="max-w-5xl mx-auto">
 
           <div className="app-controls mb-8">
