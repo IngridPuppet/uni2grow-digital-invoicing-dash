@@ -1,0 +1,72 @@
+.app-show-entity {
+
+  .app-controls {
+    @apply flex items-end text-gray-700;
+
+    .app-right {
+      @apply ml-auto flex items-center;
+
+      button {
+        @apply flex items-center whitespace-nowrap ml-4 px-3 py-2 rounded text-gray-700 text-xs
+               bg-gray-100 shadow-sm transition-all ease-in font-semibold
+               hover:bg-purple-700 hover:text-gray-50;
+
+        &.app-control-delete {
+          @apply hover:bg-red-700 hover:text-gray-50;
+        }
+
+        svg {
+          @apply mr-2 text-sm;
+        }
+      }
+    }
+  }
+
+  form {
+    .app-fields {
+      @apply rounded border border-black p-4 space-y-4;
+
+      .app-field {
+        @apply text-gray-900;
+
+        label {
+          @apply block text-sm mb-1 text-gray-700;
+          &::before {
+            content: '-> ';
+          }
+        }
+
+        input.app-field-control {
+          @apply p-2 bg-white rounded border border-gray-500
+                 text-sm focus:outline-none focus:ring w-full focus:ring-purple-300
+                 ease-linear transition-all duration-150;
+        }
+
+        p {
+          @apply mt-2 text-red-900 text-xs;
+        }
+      }
+    }
+
+    button.app-control-cancel {
+      @apply flex items-center pl-4 pr-6 py-2 rounded bg-gray-200 text-gray-700 ml-2
+             transition-all ease-in shadow-sm whitespace-nowrap hover:scale-105;
+    }
+
+    button[type=submit] {
+      @apply flex items-center pl-4 pr-6 py-2 rounded bg-purple-700 text-gray-50 ml-2
+             transition-all ease-in shadow-sm whitespace-nowrap hover:scale-105;
+
+      svg {
+        @apply mr-3;
+      }
+    }
+  }
+
+  &.app-showing {
+    form .app-field-control {
+      @apply bg-transparent pointer-events-none #{!important};
+    }
+  }
+
+}

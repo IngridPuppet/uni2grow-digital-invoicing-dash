@@ -46,9 +46,9 @@ export default function ShowItems() {
 
           <div className="app-controls mb-8">
             <div className="app-left">
-              <button type="button">
+              <Link to="/items/new">
                 Add an item <span className="ml-3"><FaArrowRightLong /></span>
-              </button>
+              </Link>
             </div>
             <form className="app-search-form" onSubmit={handleSubmit}>
               <input type="text" placeholder="Search by name"

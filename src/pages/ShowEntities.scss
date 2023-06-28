@@ -14,7 +14,7 @@
     @apply flex items-center space-x-4 md:space-x-20;
 
     .app-left {
-      button {
+      button, a {
         @apply flex items-center px-4 py-2 rounded bg-purple-700 text-gray-50
               transition-all ease-in shadow-sm whitespace-nowrap hover:scale-105;
       }
