@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { SyntheticEvent, useEffect, useState } from "react"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Address } from "@/models"
@@ -30,6 +30,12 @@ export default function ShowAddresses() {
     setTimeout(load, 300)
   }, [])
 
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setTimeout(load, 300)
+    setAddresses(() => ({}))
+  }
+
   return (
     <>
       <main className="container mx-auto p-8 app-unready">
@@ -41,7 +47,7 @@ export default function ShowAddresses() {
                 Add a address <span className="ml-3"><FaArrowRightLong /></span>
               </button>
             </div>
-            <form className="app-search-form" onSubmit={(e) => {load(); e.preventDefault()}}>
+            <form className="app-search-form" onSubmit={handleSubmit}>
               <input type="text" placeholder="Search by any property"
                      onChange={(e) => setKey(e.target.value)} />
               <button type="submit"><FaMagnifyingGlass /></button>

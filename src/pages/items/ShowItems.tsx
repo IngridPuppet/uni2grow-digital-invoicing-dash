@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { SyntheticEvent, useEffect, useState } from "react"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Item } from "@/models"
@@ -30,6 +30,12 @@ export default function ShowItems() {
     setTimeout(load, 300)
   }, [])
 
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setTimeout(load, 300)
+    setItems(() => ({}))
+  }
+
   return (
     <>
       <main className="container mx-auto p-8">
@@ -41,7 +47,7 @@ export default function ShowItems() {
                 Add an item <span className="ml-3"><FaArrowRightLong /></span>
               </button>
             </div>
-            <form className="app-search-form" onSubmit={(e) => {load(); e.preventDefault()}}>
+            <form className="app-search-form" onSubmit={handleSubmit}>
               <input type="text" placeholder="Search by name"
                      onChange={(e) => setKey(e.target.value)} />
               <button type="submit"><FaMagnifyingGlass /></button>
