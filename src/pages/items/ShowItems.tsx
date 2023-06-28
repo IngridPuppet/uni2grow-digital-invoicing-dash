@@ -40,14 +40,14 @@ export default function ShowItems() {
       <main className="container mx-auto p-8">
         <div className="max-w-3xl mx-auto">
           {
-            isLoading || items[paging.curr] == undefined ?
+            (paging.currSize == 0) && (isLoading || items[paging.curr] == undefined) ?
               <>
                 <div className="font-brand fixed-center text-3xl">Loading...</div>
               </>
               :
               <>
                 {
-                  items[paging.curr].length == 0 ?
+                  paging.currSize == 0 ?
                     <>
                       <div className="font-brand fixed-center text-3xl">Empty</div>
                     </>
@@ -64,12 +64,12 @@ export default function ShowItems() {
                             </thead>
                             <tbody>
                               {
-                                items[paging.curr].map((item: Item) => <>
-                                  <tr className="">
+                                items[paging.curr].map((item: Item) =>
+                                  <tr key={item.id}>
                                     <td scope="row" className="row-lead">{ item.name }</td>
                                     <td>${ item.price }</td>
                                   </tr>
-                                </>)
+                                )
                               }
                             </tbody>
                           </table>
