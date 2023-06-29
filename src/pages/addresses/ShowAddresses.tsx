@@ -1,4 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Address } from "@/models"
@@ -9,6 +10,8 @@ import Pager from "@/components/Pager"
 import '../ShowEntities.scss'
 
 export default function ShowAddresses() {
+  const navigate = useNavigate()
+
   const [key, setKey] = useState('')
   const [paging, setPaging] = useState({curr: 0, currSize: 0, total: 0})
 
@@ -39,13 +42,13 @@ export default function ShowAddresses() {
   return (
     <>
       <main className="container mx-auto p-8 app-show-entities">
-        <div className="max-w-5xl mx-auto app-unready">
+        <div className="max-w-5xl mx-auto">
 
           <div className="app-controls mb-8">
             <div className="app-left">
-              <button type="button">
+              <Link to="/addresses/new">
                 Add an address <span className="ml-3"><FaArrowRightLong /></span>
-              </button>
+              </Link>
             </div>
             <form className="app-search-form" onSubmit={handleSubmit}>
               <input type="text" placeholder="Search by any property"
@@ -83,12 +86,12 @@ export default function ShowAddresses() {
                             <tbody>
                               {
                                 addresses[paging.curr].map((address: Address) =>
-                                  <tr key={address.id}>
-                                    <td style={{maxWidth: "10rem", wordWrap: "break-word"}}>{ address.country}</td>
-                                    <td>{ address.state ?? "N/A" }</td>
-                                    <td>{ address.city ?? "N/A" }</td>
-                                    <td>{ address.street ?? "N/A" }</td>
-                                    <td>{ address.zipCode ?? "N/A" }</td>
+                                  <tr key={address.id} onClick={() => navigate(`/addresses/${address.id}`)}>
+                                    <td style={{maxWidth: "10rem", wordWrap: "break-word"}}>{ address.country }</td>
+                                    <td>{ address.state ? address.state : "N/A" }</td>
+                                    <td>{ address.city ? address.city : "N/A" }</td>
+                                    <td>{ address.street ? address.street : "N/A" }</td>
+                                    <td>{ address.zipCode ? address.zipCode : "N/A" }</td>
                                   </tr>
                                 )
                               }

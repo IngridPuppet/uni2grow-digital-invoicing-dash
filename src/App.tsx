@@ -10,6 +10,7 @@ import ShowItems from './pages/items/ShowItems'
 import ManageItem from './pages/items/ManageItem'
 import ShowCustomers from './pages/customers/ShowCustomers'
 import ShowAddresses from './pages/addresses/ShowAddresses'
+import ManageAddress from './pages/addresses/ManageAddress'
 
 function App() {
   return (
@@ -32,7 +33,10 @@ function App() {
         <Route path="/items/new" element={<ManageItem />}></Route>
 
         <Route path="/customers" element={<ShowCustomers />}></Route>
+
         <Route path="/addresses" element={<ShowAddresses />}></Route>
+        <Route path="/addresses/:id" element={<ManageAddress />}></Route>
+        <Route path="/addresses/new" element={<ManageAddress />}></Route>
 
         <Route path="*" element={<NotFound />}></Route>
       </Routes>

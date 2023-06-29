@@ -2,10 +2,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong } from 'react-icons/fa6'
 import { useForm, SubmitHandler } from "react-hook-form"
-import { Item } from '@/models'
+import { Address } from '@/models'
 
 import '../ManageEntity.scss'
 import axios from '@/services/axios'
+import countries from '@/services/countries'
 import Loader from '@/components/Loader'
 import { toast } from 'react-hot-toast'
 
@@ -13,14 +14,14 @@ import { toast } from 'react-hot-toast'
  * This component handles all CRUD operations.
  */
 
-export default function ManageItem() {
+export default function ManageAddress() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [editable, setEditable] = useState(false)
 
   // React hook form
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Item>()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Address>()
 
   useEffect(() => {
     ;(id != null) && load()
@@ -28,7 +29,7 @@ export default function ManageItem() {
 
   const load = () => {
     setLoading(true)
-    axios.get(`/items/${id}`)
+    axios.get(`/addresses/${id}`)
       .then((response) => {
         if (response.status == 200) {
           // Fill form fields
@@ -39,25 +40,25 @@ export default function ManageItem() {
       .catch(() => { navigate('/404') })
   }
 
-  const onSubmit: SubmitHandler<Item> = (data) => {
+  const onSubmit: SubmitHandler<Address> = (data) => {
     const errorMessage = 'Oops, something went wrong!\n'
                        + 'Some fields may be required unique.'
     setLoading(true)
 
     if (id == null) {
       // Send a create request
-      axios.post('/items', data)
+      axios.post('/addresses', data)
         .then((response) => {
           if (response.status == 201) {
             toast.success('Successfully created!')
-            navigate(`/items/${response.data.id}`)
+            navigate(`/addresses/${response.data.id}`)
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading(false) })
     } else {
       // Send an update request
-      axios.put(`/items/${id}`, data)
+      axios.put(`/addresses/${id}`, data)
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully updated!')
@@ -70,17 +71,17 @@ export default function ManageItem() {
   }
 
   const handleDelete = () => {
-    const errorMessage = 'You should probably not delete this item.'
+    const errorMessage = 'You should probably not delete this address.'
 
     if (confirm('Deletion is irreversible. Do you really want to proceed?')) {
       setLoading(true)
 
       // Send a delete request
-      axios.delete(`/items/${id}`)
+      axios.delete(`/addresses/${id}`)
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully deleted!')
-            navigate(`/items`)
+            navigate(`/addresses`)
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
@@ -95,12 +96,13 @@ export default function ManageItem() {
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            <Link to="/items"><FaArrowLeftLong /></Link>
+            <Link to="/addresses"><FaArrowLeftLong /></Link>
             <div className="hidden md:block ml-4">
               { id ? (editable ? "Editing " : "Showing ") : "Adding an " }
-              item
+              address
               { id ? ` #${id}` : "" }
             </div>
+
             {
               loading &&
                 <div className="app-loader text-2xl ml-4">
@@ -129,28 +131,61 @@ export default function ManageItem() {
             <div className="app-fields">
 
               <div className="app-field">
-                <label>Name<span className="text-gray-500">*</span></label>
+                <label>Street</label>
                 <input type="text" className="app-field-control"
-                {...register('name', {required: true})} />
+                {...register('street', {})} />
+              </div>
 
-                { errors.name && <p className="app-field-error">
+              <div className="app-field">
+                <label>City<span className="text-gray-500">*</span></label>
+                <input type="text" className="app-field-control"
+                {...register('city', {required: true})} />
+
+                { errors.city && <p className="app-field-error">
                   This field is required.
                 </p> }
               </div>
 
               <div className="app-field">
-                <label>Price<span className="text-gray-500">*</span></label>
-                <input type="number" step="0.01" className="app-field-control"
-                {...register('price', {required: true, min: 0})} />
+                <label>State</label>
+                <input type="text" className="app-field-control"
+                {...register('state', {})} />
+              </div>
 
-                { errors.price && <p className="app-field-error">
-                  This field is required and must be positive.
+              <div className="app-field">
+                <label>Country<span className="text-gray-500">*</span></label>
+                <select className="app-field-control"
+                {...register('country', {required: true})} defaultValue="Cameroon">
+                  {
+                    countries.map((country, index) => (
+                      <option value={country.name} key={index}>{country.name}</option>
+                    ))
+                  }
+                </select>
+
+                { errors.country && <p className="app-field-error">
+                  This field is required.
+                </p> }
+              </div>
+
+              <div className="app-field">
+                <label>ZIP Code</label>
+                <input type="text" className="app-field-control"
+                {...register('zipCode', {
+                  pattern: {
+                    value: /^[0-9-]+$/,
+                    message: 'This field may only contain figures and hyphens.',
+                  },
+                })} />
+
+                { errors.zipCode && <p className="app-field-error">
+                { errors.zipCode.message }
                 </p> }
               </div>
 
             </div>
 
-            <div className="flex items-center py-4">
+            <div className="flex addresses-center py-4">
               <div className="flex-grow">&nbsp;</div>
 
               {

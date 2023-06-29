@@ -1,4 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Invoice } from "@/models"
@@ -10,6 +11,8 @@ import { handyDate, handyMoney } from "@/services/util"
 import '../ShowEntities.scss'
 
 export default function ShowInvoices() {
+  const navigate = useNavigate()
+
   const [key, setKey] = useState('')
   const [paging, setPaging] = useState({curr: 0, currSize: 0, total: 0})
 
@@ -89,7 +92,7 @@ export default function ShowInvoices() {
                                         { invoice.number.split('-')[0] }
                                       </span>
                                     </td>
-                                    <td>{ invoice?.customer.name ?? "N/A" }</td>
+                                    <td>{ invoice.customer?.name ?? "N/A" }</td>
                                     <td>${ handyMoney(invoice.total) }</td>
                                     <td>{ handyDate(invoice.issueDate) }</td>
                                   </tr>

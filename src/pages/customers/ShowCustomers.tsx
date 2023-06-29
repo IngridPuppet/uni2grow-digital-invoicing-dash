@@ -1,4 +1,5 @@
 import { SyntheticEvent, useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useStore } from "@/store"
 import axios from "@/services/axios"
 import { Customer } from "@/models"
@@ -10,6 +11,8 @@ import { handyAddress } from "@/services/util"
 import '../ShowEntities.scss'
 
 export default function ShowCustomers() {
+  const navigate = useNavigate()
+
   const [key, setKey] = useState('')
   const [paging, setPaging] = useState({curr: 0, currSize: 0, total: 0})
 
@@ -85,9 +88,9 @@ export default function ShowCustomers() {
                                 customers[paging.curr].map((customer: Customer) =>
                                   <tr key={customer.id}>
                                     <td className="row-lead">{ customer.name }</td>
-                                    <td>{ customer.email ?? "N/A" }</td>
-                                    <td>{ customer.phone ?? "N/A" }</td>
-                                    <td>{ handyAddress(customer.address) ?? "N/A" }</td>
+                                    <td>{ customer.email ? customer.email : "N/A" }</td>
+                                    <td>{ customer.phone ? customer.phone : "N/A" }</td>
+                                    <td>{ customer.address ? handyAddress(customer.address) : "N/A" }</td>
                                   </tr>
                                 )
                               }

@@ -85,7 +85,7 @@ export default function ShowItems() {
                                 items[paging.curr].map((item: Item) =>
                                   <tr key={item.id} onClick={() => navigate(`/items/${item.id}`)}>
                                     <td className="row-lead">{ item.name }</td>
-                                    <td>${ item.price }</td>
+                                    <td>${ item.price ?? "N/A" }</td>
                                   </tr>
                                 )
                               }

@@ -39,7 +39,7 @@
           @apply block text-sm mb-1 text-gray-700;
         }
 
-        input.app-field-control {
+        input.app-field-control, select.app-field-control {
           @apply p-2 rounded border border-gray-500
                  text-sm focus:outline-none focus:ring w-full focus:ring-purple-300
                  ease-linear transition-all duration-150;
