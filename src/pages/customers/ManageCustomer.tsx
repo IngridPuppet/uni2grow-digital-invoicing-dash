@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong } from 'react-icons/fa6'
 import { useForm, SubmitHandler } from "react-hook-form"
@@ -17,6 +17,7 @@ import { toast } from 'react-hot-toast'
 export default function ManageCustomer() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const [loading, setLoading] = useState(0)
   const [editable, setEditable] = useState(false)
 
@@ -35,7 +36,7 @@ export default function ManageCustomer() {
     // react-hook-form.
     while (loading > 0);
     (id != null) && load()
-  }, [])
+  }, [location.key])
 
   const load = () => {
     setLoading((x) => x + 1)
@@ -84,9 +85,6 @@ export default function ManageCustomer() {
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading((x) => x - 1) })
     } else {
-      // react-hook-form pains to track this
-      data.id = id as any
-
       // Send an update request
       axios.put(`/customers/${id}`, data)
         .then((response) => {

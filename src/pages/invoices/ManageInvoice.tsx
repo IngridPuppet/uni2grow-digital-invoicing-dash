@@ -1,13 +1,13 @@
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong } from 'react-icons/fa6'
+import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong, FaCirclePlus, FaCircleXmark } from 'react-icons/fa6'
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
 import { Invoice, Address, Customer, Item } from '@/models'
 
 import '../ManageEntity.scss'
 import axios from '@/services/axios'
 import Loader from '@/components/Loader'
-import { handyDate, handyLongAddress } from '@/services/util'
+import { handyDate, handyLongAddress, handyMoney } from '@/services/util'
 import { toast } from 'react-hot-toast'
 
 /**
@@ -16,6 +16,7 @@ import { toast } from 'react-hot-toast'
 
 export default function ManageInvoice() {
   const { id } = useParams()
+  const location = useLocation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(0)
   const [editable, setEditable] = useState(false)
@@ -26,8 +27,8 @@ export default function ManageInvoice() {
   const [addresses, setAddresses] = useState<Address[]>([])
 
   // React hook form
-  const { control, register, handleSubmit, reset, setValue, getValues, formState: { errors } } = useForm<Invoice>()
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  const { control, register, handleSubmit, reset, setValue, getValues, watch, formState: { errors }} = useForm<Invoice>()
+  const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'relInvoiceItems', // unique name for your Field Array
   })
@@ -41,7 +42,7 @@ export default function ManageInvoice() {
     // react-hook-form.
     while (loading > 0);
     (id != null) && load()
-  }, [])
+  }, [location.key])
 
   const load = () => {
     setLoading((x) => x + 1)
@@ -82,6 +83,50 @@ export default function ManageInvoice() {
           setLoading((x) => x - 1)
         }
       })
+  }
+
+  const manageInventory = {
+    onAppend() {
+      append({ id: null, quantity: 0, priceOfRecord: 0, item: { id: null } } as any)
+    },
+
+    onRemove(index: number)  {
+      return () => {
+        remove(index)
+        this.totalize()
+      }
+    },
+
+    onCustomerChange(e: any) {
+      // Pre-fill billing address
+
+      const customerId = parseInt(e.target.value)
+      const customer = customers.find((obj) => {
+        return obj.id == customerId
+      })
+
+      setValue(`billingAddress.id`, customer?.address?.id as any)
+    },
+
+    onItemChange(index: number) {
+      return (e: any) => {
+        // Pre-fill 'price of record' field
+
+        const itemId = parseInt(e.target.value)
+        const item = items.find((obj) => {
+          return obj.id == itemId
+        })
+
+        setValue(`relInvoiceItems.${index}.priceOfRecord`, item?.price ?? 0)
+        this.totalize()
+      }
+    },
+
+    totalize()  {
+      let sum = 0
+      getValues().relInvoiceItems.map((x) => sum += x.quantity * x.priceOfRecord)
+      setValue('total', sum)
+    }
   }
 
   const onSubmit: SubmitHandler<Invoice> = (data: any) => {
@@ -208,7 +253,7 @@ export default function ManageInvoice() {
               <div className="app-field">
                 <label>Customer<span className="text-gray-500">*</span></label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('customer.id', { required: true })}>
+                {...register('customer.id', { required: true, onChange: manageInventory.onCustomerChange })}>
                   <option hidden value={undefined}></option>
                   {
                     customers.map((customer) => (
@@ -239,20 +284,35 @@ export default function ManageInvoice() {
                 </p> }
               </div>
 
-              {/* Looping inventory below */}
+              {/* Looping through inventory below */}
 
               <hr className='border-gray-300 mt-8' />
-              <div className='text-center -translate-y-1/2 uppercase text-xs flex justify-around'>
-                <span className='bg-slate-50 px-4 text-gray-700'>Inventory</span>
+              <div className='-translate-y-1/2 uppercase text-xs grid grid-cols-4 gap-x-4'>
+                <div className='col-span-4 text-center'>
+                  <span className='bg-slate-50 px-4 text-gray-700'>Inventory</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 gap-x-4 mt-2 app-inventory">
+                <div className="col-span-2"><label>Item</label></div>
+                <div className=""><label>Quantity</label></div>
+                <div className=""><label>Price</label></div>
               </div>
 
               {
                 fields.map((field, index) => (
-                  <div className="grid md:grid-cols-5 gap-x-4 mt-2 app-inventory" key={field.id}>
+                  <div className="grid grid-cols-4 gap-x-4 mt-2 app-inventory app-inventory-item" key={field.id}>
 
-                    <div className="app-field md:col-span-3">
-                      <select className="app-field-control" defaultValue={undefined}
-                      {...register(`relInvoiceItems.${index}.item.id`)} required>
+                    <div className="app-field col-span-2 flex items-center">
+                      {
+                        (id == null || editable) &&
+                          <button type="button" onClick={manageInventory.onRemove(index)}>
+                            <FaCircleXmark />
+                          </button>
+                      }
+
+                      <select className="app-field-control" defaultValue={undefined} required
+                      {...register(`relInvoiceItems.${index}.item.id`, { onChange: manageInventory.onItemChange(index) })}>
                         <option hidden value={undefined}></option>
                         {
                           items.map((item) => (
@@ -264,17 +324,34 @@ export default function ManageInvoice() {
 
                     <div className="app-field">
                       <input type="number" className="app-field-control" required
-                      {...register(`relInvoiceItems.${index}.quantity`, { min: 0 })} />
+                      {...register(`relInvoiceItems.${index}.quantity`, { onChange: manageInventory.totalize })} min={1} />
                     </div>
 
                     <div className="app-field">
                       <input type="number" step="0.01" className="app-field-control" required
-                      {...register(`relInvoiceItems.${index}.priceOfRecord`, { min: 0 })} />
+                      {...register(`relInvoiceItems.${index}.priceOfRecord`, { onChange: manageInventory.totalize })} min={0} />
                     </div>
 
                   </div>
                 ))
               }
+
+              <div className="grid grid-cols-4 gap-x-4 mt-4 app-inventory app-inventory-end">
+                <div className="col-span-2">
+                  {
+                    (id == null || editable) &&
+                      <button type="button" onClick={manageInventory.onAppend}>
+                        <FaCirclePlus />Add
+                      </button>
+                  }
+                </div>
+                <div className="col-span-2 flex items-center">
+                  <label className='app-label-total ml-auto'>Total</label>
+                  <span className='ml-2 pr-2 text-purple-900 text-lg font-semibold'>
+                    ${handyMoney(watch('total'))}
+                  </span>
+                </div>
+              </div>
 
             </div>
 

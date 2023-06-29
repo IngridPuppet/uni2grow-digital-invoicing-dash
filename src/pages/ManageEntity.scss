@@ -67,12 +67,49 @@
       }
 
       .app-inventory {
+        label {
+          @apply block text-sm text-gray-700 font-bold;
+          &::after {
+            content: '▾';
+            @apply ml-1;
+          }
+
+          &.app-label-total::after {
+            content: '▸';
+          }
+        }
+
         .app-field {
           @apply mt-0;
           .app-field-control {
             @apply py-1;
             &[type=number] {
               @apply text-right;
+            }
+          }
+        }
+
+        button {
+          @apply flex items-center justify-around whitespace-nowrap rounded text-gray-700 text-xs
+          bg-gray-100 shadow-sm transition-all ease-in font-semibold
+          hover:bg-purple-700 hover:text-gray-50 mr-2;
+
+          svg {
+            @apply text-xs;
+          }
+        }
+
+        &.app-inventory-item {
+          button {
+            @apply p-2;
+          }
+        }
+
+        &.app-inventory-end {
+          button {
+            @apply p-2;
+            svg {
+              @apply mr-2;
             }
           }
         }

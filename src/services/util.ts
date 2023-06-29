@@ -19,6 +19,10 @@ export const handyLongAddress = (address : Address): string => {
 }
 
 export const handyMoney = (money: number): number => {
+  if (money == undefined || money == null) {
+    return 0
+  }
+
   let res = +(money.toFixed(2))
   if (money - res > 0) {
     res += 0.011
