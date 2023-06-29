@@ -21,7 +21,7 @@ export default function ManageAddress() {
   const [editable, setEditable] = useState(false)
 
   // React hook form
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Address>()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Address>({})
 
   useEffect(() => {
     ;(id != null) && load()
@@ -57,6 +57,9 @@ export default function ManageAddress() {
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading((x) => x - 1) })
     } else {
+      // react-hook-form pains to track this
+      data.id = id as any
+
       // Send an update request
       axios.put(`/addresses/${id}`, data)
         .then((response) => {

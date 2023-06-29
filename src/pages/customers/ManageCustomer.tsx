@@ -78,6 +78,9 @@ export default function ManageCustomer() {
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading((x) => x - 1) })
     } else {
+      // react-hook-form pains to track this
+      data.id = id as any
+
       // Send an update request
       axios.put(`/customers/${id}`, data)
         .then((response) => {
@@ -164,7 +167,7 @@ export default function ManageCustomer() {
               <div className="app-field">
                 <label>Email</label>
                 <input type="email" className="app-field-control"
-                {...register('email', {})} />
+                {...register('email', { setValueAs: (v) => v ? v : undefined })} />
               </div>
 
               <div className="app-field">
@@ -185,7 +188,7 @@ export default function ManageCustomer() {
               <div className="app-field">
                 <label>Address</label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('address.id', {})}>
+                {...register('address.id', { })}>
                   <option value={undefined}></option>
                   {
                     addresses.map((address) => (

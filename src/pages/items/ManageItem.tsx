@@ -56,6 +56,9 @@ export default function ManageItem() {
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading((x) => x - 1) })
     } else {
+      // react-hook-form pains to track this
+      data.id = id as any
+
       // Send an update request
       axios.put(`/items/${id}`, data)
         .then((response) => {
