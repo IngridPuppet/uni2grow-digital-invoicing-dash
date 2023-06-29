@@ -56,10 +56,15 @@ export default function ManageCustomer() {
       })
   }
 
-  const onSubmit: SubmitHandler<Customer> = (data) => {
+  const onSubmit: SubmitHandler<Customer> = (data: any) => {
     const errorMessage = 'Oops, something went wrong!\n'
                        + 'Some fields may be required unique.'
     setLoading((x) => x + 1)
+
+    // Set whole object to null if address unset
+    if (!data.address.id) {
+      delete data.address
+    }
 
     if (id == null) {
       // Send a create request
