@@ -17,7 +17,7 @@ import { toast } from 'react-hot-toast'
 export default function ManageAddress() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(0)
   const [editable, setEditable] = useState(false)
 
   // React hook form
@@ -28,13 +28,13 @@ export default function ManageAddress() {
   }, [])
 
   const load = () => {
-    setLoading(true)
+    setLoading((x) => x + 1)
     axios.get(`/addresses/${id}`)
       .then((response) => {
         if (response.status == 200) {
           // Fill form fields
           reset(response.data)
-          setLoading(false)
+          setLoading((x) => x - 1)
         }
       })
       .catch(() => { navigate('/404') })
@@ -43,7 +43,7 @@ export default function ManageAddress() {
   const onSubmit: SubmitHandler<Address> = (data) => {
     const errorMessage = 'Oops, something went wrong!\n'
                        + 'Some fields may be required unique.'
-    setLoading(true)
+    setLoading((x) => x + 1)
 
     if (id == null) {
       // Send a create request
@@ -55,7 +55,7 @@ export default function ManageAddress() {
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
-        .finally(() => { setLoading(false) })
+        .finally(() => { setLoading((x) => x - 1) })
     } else {
       // Send an update request
       axios.put(`/addresses/${id}`, data)
@@ -66,7 +66,7 @@ export default function ManageAddress() {
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
-        .finally(() => { setLoading(false) })
+        .finally(() => { setLoading((x) => x - 1) })
     }
   }
 
@@ -74,7 +74,7 @@ export default function ManageAddress() {
     const errorMessage = 'You should probably not delete this address.'
 
     if (confirm('Deletion is irreversible. Do you really want to proceed?')) {
-      setLoading(true)
+      setLoading((x) => x + 1)
 
       // Send a delete request
       axios.delete(`/addresses/${id}`)
@@ -85,7 +85,7 @@ export default function ManageAddress() {
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
-        .finally(() => { setLoading(false) })
+        .finally(() => { setLoading((x) => x - 1) })
     }
   }
 
@@ -104,7 +104,7 @@ export default function ManageAddress() {
             </div>
 
             {
-              loading &&
+              !!loading &&
                 <div className="app-loader text-2xl ml-4">
                   <Loader />
                 </div>
@@ -185,7 +185,7 @@ export default function ManageAddress() {
 
             </div>
 
-            <div className="flex addresses-center py-4">
+            <div className="flex items-center py-4">
               <div className="flex-grow">&nbsp;</div>
 
               {

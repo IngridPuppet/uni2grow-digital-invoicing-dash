@@ -5,11 +5,14 @@ import { Route, Routes, Navigate } from "react-router-dom"
 import NotFound from "./pages/_errors/NotFound"
 
 import './App.scss'
+
 import ShowInvoices from './pages/invoices/ShowInvoices'
 import ShowItems from './pages/items/ShowItems'
-import ManageItem from './pages/items/ManageItem'
 import ShowCustomers from './pages/customers/ShowCustomers'
 import ShowAddresses from './pages/addresses/ShowAddresses'
+
+import ManageItem from './pages/items/ManageItem'
+import ManageCustomer from './pages/customers/ManageCustomer'
 import ManageAddress from './pages/addresses/ManageAddress'
 
 function App() {
@@ -33,6 +36,8 @@ function App() {
         <Route path="/items/new" element={<ManageItem />}></Route>
 
         <Route path="/customers" element={<ShowCustomers />}></Route>
+        <Route path="/customers/:id" element={<ManageCustomer />}></Route>
+        <Route path="/customers/new" element={<ManageCustomer />}></Route>
 
         <Route path="/addresses" element={<ShowAddresses />}></Route>
         <Route path="/addresses/:id" element={<ManageAddress />}></Route>

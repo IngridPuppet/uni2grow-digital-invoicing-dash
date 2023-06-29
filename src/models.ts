@@ -9,7 +9,7 @@ export interface Customer {
   name: string
   email: string
   phone: string
-  address : Address
+  address: Address | null
 }
 
 export interface Address {

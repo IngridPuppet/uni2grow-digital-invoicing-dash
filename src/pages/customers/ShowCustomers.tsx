@@ -43,13 +43,13 @@ export default function ShowCustomers() {
   return (
     <>
       <main className="container mx-auto p-8 app-show-entities">
-        <div className="max-w-5xl mx-auto app-unready">
+        <div className="max-w-5xl mx-auto">
 
           <div className="app-controls mb-8">
             <div className="app-left">
-              <button type="button">
+              <Link to="/customers/new">
                 Add a customer <span className="ml-3"><FaArrowRightLong /></span>
-              </button>
+              </Link>
             </div>
             <form className="app-search-form" onSubmit={handleSubmit}>
               <input type="text" placeholder="Search by name / email / phone"
@@ -86,7 +86,7 @@ export default function ShowCustomers() {
                             <tbody>
                               {
                                 customers[paging.curr].map((customer: Customer) =>
-                                  <tr key={customer.id}>
+                                  <tr key={customer.id} onClick={() => navigate(`/customers/${customer.id}`)}>
                                     <td className="row-lead">{ customer.name }</td>
                                     <td>{ customer.email ? customer.email : "N/A" }</td>
                                     <td>{ customer.phone ? customer.phone : "N/A" }</td>

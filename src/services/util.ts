@@ -9,6 +9,15 @@ export const handyAddress = (address: Address): string | null => {
   return (res == "") ? null : res
 }
 
+export const handyLongAddress = (address : Address): string => {
+  const street = address.street ? address.street + ", " : ""
+  const city = address.city ? address.city + ", " : ""
+  const state = address.state ? address.state + ", " : ""
+  const country = address.country
+
+  return street + city + state + country
+}
+
 export const handyMoney = (money: number): number => {
   let res = +(money.toFixed(2))
   if (money - res > 0) {
