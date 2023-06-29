@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-As part of a coding interview at Uni2Grow Cameroun SARL, this project builds a React app that peers
+As part of a coding interview at Uni2Grow Cameroun SARL, this project builds a React app that pairs
 with a Spring Boot REST API for the purpose of digital invoicing.
 
 ## Guide
