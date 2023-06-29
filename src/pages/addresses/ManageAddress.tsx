@@ -70,7 +70,7 @@ export default function ManageAddress() {
     }
   }
 
-  const handleDelete = () => {
+  const onDelete = () => {
     const errorMessage = 'You should probably not delete this address.'
 
     if (confirm('Deletion is irreversible. Do you really want to proceed?')) {
@@ -119,7 +119,7 @@ export default function ManageAddress() {
                     </button>
 
                     <button className="app-control-delete"
-                            onClick={handleDelete}>
+                            onClick={onDelete}>
                       <FaTrashCan /> Delete
                     </button>
                   </>

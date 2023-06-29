@@ -69,7 +69,7 @@ export default function ManageItem() {
     }
   }
 
-  const handleDelete = () => {
+  const onDelete = () => {
     const errorMessage = 'You should probably not delete this item.'
 
     if (confirm('Deletion is irreversible. Do you really want to proceed?')) {
@@ -117,7 +117,7 @@ export default function ManageItem() {
                     </button>
 
                     <button className="app-control-delete"
-                            onClick={handleDelete}>
+                            onClick={onDelete}>
                       <FaTrashCan /> Delete
                     </button>
                   </>
