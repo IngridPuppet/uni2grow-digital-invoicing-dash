@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong, FaCirclePlus, FaCircleXmark } from 'react-icons/fa6'
+import { ReactInstance, useEffect, useRef, useState } from 'react'
+import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong, FaCirclePlus, FaCircleXmark, FaPrint } from 'react-icons/fa6'
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
 import { Invoice, Address, Customer, Item } from '@/models'
 
@@ -9,6 +9,9 @@ import axios from '@/services/axios'
 import Loader from '@/components/Loader'
 import { handyDate, handyLongAddress, handyMoney } from '@/services/util'
 import { toast } from 'react-hot-toast'
+
+import { useReactToPrint } from 'react-to-print'
+import PrintableInvoice from './PrintableInvoice'
 
 /**
  * This component handles all CRUD operations.
@@ -31,6 +34,14 @@ export default function ManageInvoice() {
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: 'relInvoiceItems', // unique name for your Field Array
+  })
+
+  // Printing
+  let printable = useRef(null) as any
+  const handlePrint = useReactToPrint({
+    content: () => printable,
+    documentTitle: `digital-invoice-${id}`,
+    pageStyle: 'print',
   })
 
   useEffect(() => {
@@ -89,7 +100,7 @@ export default function ManageInvoice() {
 
   const manageInventory = {
     onAppend() {
-      append({ id: null, quantity: 0, priceOfRecord: 0, item: { id: null } } as any)
+      append({ id: null, quantity: 1, priceOfRecord: 0, item: { id: null } } as any)
     },
 
     onRemove(index: number)  {
@@ -216,6 +227,10 @@ export default function ManageInvoice() {
               {
                 (id != null && !editable) &&
                   <>
+                    <button className="app-control-print" onClick={handlePrint}>
+                      <FaPrint /> Print
+                    </button>
+
                     <button onClick={() => setEditable(true)}>
                       <FaPencil /> Edit
                     </button>
@@ -374,6 +389,12 @@ export default function ManageInvoice() {
 
         </div>
       </main>
+
+      <div className="hidden">
+        <div ref={(el) => (printable = el)}>
+          <PrintableInvoice invoice={ (id == null) ? null : getValues() } />
+        </div>
+      </div>
     </>
   )
 }

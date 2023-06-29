@@ -18,7 +18,7 @@ import ManageAddress from './pages/addresses/ManageAddress'
 
 function App() {
   return (
-    <>
+    <div className="app-global-container">
       <Toaster
         containerClassName="app-toaster"
         position="top-right"
@@ -48,7 +48,7 @@ function App() {
 
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
-    </>
+    </div>
   )
 }
 

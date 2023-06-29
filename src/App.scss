@@ -1,6 +1,10 @@
 body {
   font-family: 'Inter Variable', sans-serif;
-  @apply bg-slate-50;
+  @apply bg-white;
+}
+
+.app-global-container {
+  @apply bg-slate-50 min-h-screen;
 }
 
 .font-brand {
