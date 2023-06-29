@@ -30,10 +30,14 @@
 
   form {
     .app-fields {
-      @apply rounded border border-black p-4 space-y-4;
+      @apply rounded border border-black p-4;
 
       .app-field {
         @apply text-gray-900;
+
+        &:not(:first-child) {
+          @apply mt-4;
+        }
 
         label {
           @apply block text-sm mb-1 text-gray-700;
@@ -53,8 +57,24 @@
           background-size: 1em;
         }
 
+        .app-field-control:disabled {
+          @apply bg-transparent pointer-events-none;
+        }
+
         p {
           @apply mt-2 text-red-900 text-xs;
+        }
+      }
+
+      .app-inventory {
+        .app-field {
+          @apply mt-0;
+          .app-field-control {
+            @apply py-1;
+            &[type=number] {
+              @apply text-right;
+            }
+          }
         }
       }
     }
@@ -81,6 +101,10 @@
   }
 
   &.app-showing {
+    form label span:first-child {
+      @apply hidden;
+    }
+
     form .app-field-control {
       @apply bg-transparent pointer-events-none;
     }

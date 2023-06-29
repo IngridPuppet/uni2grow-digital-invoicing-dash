@@ -28,7 +28,13 @@ export default function ManageCustomer() {
 
   useEffect(() => {
     loadSelects()
-    ;(id != null) && load()
+
+    // Wait synchronously for selects to load
+    // before attempting to load current entity
+    // if any. This works around a "bug" in
+    // react-hook-form.
+    while (loading > 0);
+    (id != null) && load()
   }, [])
 
   const load = () => {

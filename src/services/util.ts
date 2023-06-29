@@ -27,7 +27,11 @@ export const handyMoney = (money: number): number => {
   return +(res.toFixed(2))
 }
 
-export const handyDate = (date: string): string => {
+export const handyDate = (date: string, withSeconds: boolean = false): string => {
+  if (!date) {
+    return ""
+  }
+
   return DateTime.fromISO(date).setLocale('en').setZone(import.meta.env.VITE_TIMEZONE)
-    .toLocaleString(DateTime.DATETIME_MED)
+    .toLocaleString(withSeconds ? DateTime.DATETIME_MED_WITH_SECONDS : DateTime.DATETIME_MED)
 }

@@ -1,13 +1,13 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong } from 'react-icons/fa6'
-import { useForm, SubmitHandler } from "react-hook-form"
-import { Invoice, Address, Customer } from '@/models'
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form"
+import { Invoice, Address, Customer, Item } from '@/models'
 
 import '../ManageEntity.scss'
 import axios from '@/services/axios'
 import Loader from '@/components/Loader'
-import { handyLongAddress } from '@/services/util'
+import { handyDate, handyLongAddress } from '@/services/util'
 import { toast } from 'react-hot-toast'
 
 /**
@@ -21,15 +21,26 @@ export default function ManageInvoice() {
   const [editable, setEditable] = useState(false)
 
   // Selects. Okay, these should be autocompleted :-(
+  const [items, setItems] = useState<Item[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
   const [addresses, setAddresses] = useState<Address[]>([])
 
   // React hook form
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Invoice>()
+  const { control, register, handleSubmit, reset, setValue, getValues, formState: { errors } } = useForm<Invoice>()
+  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'relInvoiceItems', // unique name for your Field Array
+  })
 
   useEffect(() => {
     loadSelects()
-    ;(id != null) && load()
+
+    // Wait synchronously for selects to load
+    // before attempting to load current entity
+    // if any. This works around a "bug" in
+    // react-hook-form.
+    while (loading > 0);
+    (id != null) && load()
   }, [])
 
   const load = () => {
@@ -46,7 +57,7 @@ export default function ManageInvoice() {
   }
 
   const loadSelects = () => {
-    setLoading((x) => x + 2)
+    setLoading((x) => x + 3)
 
     axios.get(`/customers`)
       .then((response) => {
@@ -60,6 +71,14 @@ export default function ManageInvoice() {
       .then((response) => {
         if (response.status == 200) {
           setAddresses(response.data)
+          setLoading((x) => x - 1)
+        }
+      })
+
+    axios.get(`/items`)
+      .then((response) => {
+        if (response.status == 200) {
+          setItems(response.data)
           setLoading((x) => x - 1)
         }
       })
@@ -169,20 +188,25 @@ export default function ManageInvoice() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="app-fields">
 
-              {/*
-              <div className="app-field">
-                <label>Name<span className="text-gray-500">*</span></label>
-                <input type="text" className="app-field-control"
-                {...register('name', {required: true})} />
+              {
+                !(id == null) && <>
+                  <div className="app-field">
+                    <label>Number</label>
+                    <input type="text" className="app-field-control"
+                    {...register('number', {})} disabled />
+                  </div>
+                  <div className="app-field">
+                    <label>Issue date</label>
+                    <input type="text" className="app-field-control"
+                    {...register('issueDate', {})} disabled hidden />
+                    <input type="text" className="app-field-control"
+                    value={handyDate(getValues().issueDate, true)} disabled />
+                  </div>
+                </>
+              }
 
-                { errors.name && <p className="app-field-error">
-                  This field is required.
-                </p> }
-              </div>
-              */}
-
               <div className="app-field">
-                <label>Customer</label>
+                <label>Customer<span className="text-gray-500">*</span></label>
                 <select className="app-field-control" defaultValue={undefined}
                 {...register('customer.id', { required: true })}>
                   <option hidden value={undefined}></option>
@@ -199,7 +223,7 @@ export default function ManageInvoice() {
               </div>
 
               <div className="app-field">
-                <label>Billing address</label>
+                <label>Billing address<span className="text-gray-500">*</span></label>
                 <select className="app-field-control" defaultValue={undefined}
                 {...register('billingAddress.id', { required: true })}>
                   <option hidden value={undefined}></option>
@@ -214,6 +238,43 @@ export default function ManageInvoice() {
                   This field is required.
                 </p> }
               </div>
+
+              {/* Looping inventory below */}
+
+              <hr className='border-gray-300 mt-8' />
+              <div className='text-center -translate-y-1/2 uppercase text-xs flex justify-around'>
+                <span className='bg-slate-50 px-4 text-gray-700'>Inventory</span>
+              </div>
+
+              {
+                fields.map((field, index) => (
+                  <div className="grid md:grid-cols-5 gap-x-4 mt-2 app-inventory" key={field.id}>
+
+                    <div className="app-field md:col-span-3">
+                      <select className="app-field-control" defaultValue={undefined}
+                      {...register(`relInvoiceItems.${index}.item.id`)} required>
+                        <option hidden value={undefined}></option>
+                        {
+                          items.map((item) => (
+                            <option value={item.id} key={item.id}>{item.name}</option>
+                          ))
+                        }
+                      </select>
+                    </div>
+
+                    <div className="app-field">
+                      <input type="number" className="app-field-control" required
+                      {...register(`relInvoiceItems.${index}.quantity`, { min: 0 })} />
+                    </div>
+
+                    <div className="app-field">
+                      <input type="number" step="0.01" className="app-field-control" required
+                      {...register(`relInvoiceItems.${index}.priceOfRecord`, { min: 0 })} />
+                    </div>
+
+                  </div>
+                ))
+              }
 
             </div>
 
