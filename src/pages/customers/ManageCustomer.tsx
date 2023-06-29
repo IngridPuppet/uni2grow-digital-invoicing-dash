@@ -35,7 +35,7 @@ export default function ManageCustomer() {
     // if any. This works around a "bug" in
     // react-hook-form.
     while (loading > 0);
-    (id != null) && load()
+    ;(id != null) && load()
   }, [location.key])
 
   const load = () => {

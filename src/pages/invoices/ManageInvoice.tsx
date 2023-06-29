@@ -36,12 +36,14 @@ export default function ManageInvoice() {
   useEffect(() => {
     loadSelects()
 
-    // Wait synchronously for selects to load
-    // before attempting to load current entity
-    // if any. This works around a "bug" in
-    // react-hook-form.
-    while (loading > 0);
-    (id != null) && load()
+    // Add an empty item line if on creation mode
+    if ((id == null) && (getValues().relInvoiceItems.length == 0)) {
+      manageInventory.onAppend()
+    }
+
+    // Wait synchronously for selects to load before attempting to load current entity
+    // if any. This works around a "bug" in react-hook-form.
+    while (loading > 0); (id != null) && load()
   }, [location.key])
 
   const load = () => {
@@ -157,9 +159,6 @@ export default function ManageInvoice() {
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
         .finally(() => { setLoading((x) => x - 1) })
     } else {
-      // react-hook-form pains to track this
-      data.id = id as any
-
       // Send an update request
       axios.put(`/invoices/${id}`, data)
         .then((response) => {
