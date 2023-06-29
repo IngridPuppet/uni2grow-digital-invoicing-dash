@@ -98,8 +98,8 @@ export default function ManageItem() {
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            <Link to="/items"><FaArrowLeftLong /></Link>
-            <div className="hidden md:block ml-4">
+            { !editable && <Link to="/items"><FaArrowLeftLong /></Link> }
+            <div className="hidden md:block my-1">
               { id ? (editable ? "Editing " : "Showing ") : "Adding an " }
               item
               { id ? ` #${id}` : "" }

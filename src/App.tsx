@@ -11,6 +11,7 @@ import ShowItems from './pages/items/ShowItems'
 import ShowCustomers from './pages/customers/ShowCustomers'
 import ShowAddresses from './pages/addresses/ShowAddresses'
 
+import ManageInvoice from './pages/invoices/ManageInvoice'
 import ManageItem from './pages/items/ManageItem'
 import ManageCustomer from './pages/customers/ManageCustomer'
 import ManageAddress from './pages/addresses/ManageAddress'
@@ -30,6 +31,8 @@ function App() {
         <Route path="/" element={<Navigate to="/invoices" replace />}></Route>
 
         <Route path="/invoices" element={<ShowInvoices />}></Route>
+        <Route path="/invoices/:id" element={<ManageInvoice />}></Route>
+        <Route path="/invoices/new" element={<ManageInvoice />}></Route>
 
         <Route path="/items" element={<ShowItems />}></Route>
         <Route path="/items/:id" element={<ManageItem />}></Route>

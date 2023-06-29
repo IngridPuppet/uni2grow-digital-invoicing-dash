@@ -47,9 +47,9 @@ export default function ShowInvoices() {
 
           <div className="app-controls mb-8">
             <div className="app-left">
-              <button type="button">
+              <Link to="/invoices/new">
                 Create an invoice <span className="ml-3"><FaArrowRightLong /></span>
-              </button>
+              </Link>
             </div>
             <form className="app-search-form" onSubmit={handleSubmit}>
               <input type="text" placeholder="Search by number / customer's name"
@@ -86,7 +86,7 @@ export default function ShowInvoices() {
                             <tbody>
                               {
                                 invoices[paging.curr].map((invoice: Invoice) =>
-                                  <tr key={invoice.id}>
+                                  <tr key={invoice.id} onClick={() => navigate(`/invoices/${invoice.id}`)}>
                                     <td className="row-lead">
                                       <span className="bg-slate-100 rounded-full px-2 py-1">
                                         { invoice.number.split('-')[0] }

@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaTrashCan, FaPencil, FaFloppyDisk, FaArrowLeftLong } from 'react-icons/fa6'
 import { useForm, SubmitHandler } from "react-hook-form"
-import { Customer, Address } from '@/models'
+import { Invoice, Address, Customer } from '@/models'
 
 import '../ManageEntity.scss'
 import axios from '@/services/axios'
@@ -14,17 +14,18 @@ import { toast } from 'react-hot-toast'
  * This component handles all CRUD operations.
  */
 
-export default function ManageCustomer() {
+export default function ManageInvoice() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(0)
   const [editable, setEditable] = useState(false)
 
   // Selects. Okay, these should be autocompleted :-(
+  const [customers, setCustomers] = useState<Customer[]>([])
   const [addresses, setAddresses] = useState<Address[]>([])
 
   // React hook form
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<Customer>()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Invoice>()
 
   useEffect(() => {
     loadSelects()
@@ -33,7 +34,7 @@ export default function ManageCustomer() {
 
   const load = () => {
     setLoading((x) => x + 1)
-    axios.get(`/customers/${id}`)
+    axios.get(`/invoices/${id}`)
       .then((response) => {
         if (response.status == 200) {
           // Fill form fields
@@ -45,7 +46,15 @@ export default function ManageCustomer() {
   }
 
   const loadSelects = () => {
-    setLoading((x) => x + 1)
+    setLoading((x) => x + 2)
+
+    axios.get(`/customers`)
+      .then((response) => {
+        if (response.status == 200) {
+          setCustomers(response.data)
+          setLoading((x) => x - 1)
+        }
+      })
 
     axios.get(`/addresses`)
       .then((response) => {
@@ -56,23 +65,29 @@ export default function ManageCustomer() {
       })
   }
 
-  const onSubmit: SubmitHandler<Customer> = (data: any) => {
-    const errorMessage = 'Oops, something went wrong!\n'
-                       + 'Some fields may be required unique.'
+  const onSubmit: SubmitHandler<Invoice> = (data: any) => {
+    const errorMessage = 'Oops, something went wrong!'
     setLoading((x) => x + 1)
 
-    // Set whole object to null if address unset
-    if (data.address.id == "") {
-      delete data.address
+    // Prune data
+
+    if (data.customer.id == "") {
+      delete data.customer
     }
+
+    if (data.billingAddress.id == "") {
+      delete data.billingAddress
+    }
+
+    // Emit requests
 
     if (id == null) {
       // Send a create request
-      axios.post('/customers', data)
+      axios.post('/invoices', data)
         .then((response) => {
           if (response.status == 201) {
             toast.success('Successfully created!')
-            navigate(`/customers/${response.data.id}`)
+            navigate(`/invoices/${response.data.id}`)
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
@@ -82,7 +97,7 @@ export default function ManageCustomer() {
       data.id = id as any
 
       // Send an update request
-      axios.put(`/customers/${id}`, data)
+      axios.put(`/invoices/${id}`, data)
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully updated!')
@@ -95,17 +110,17 @@ export default function ManageCustomer() {
   }
 
   const onDelete = () => {
-    const errorMessage = 'You should probably not delete this customer.'
+    const errorMessage = 'You should probably not delete this invoice.'
 
     if (confirm('Deletion is irreversible. Do you really want to proceed?')) {
       setLoading((x) => x + 1)
 
       // Send a delete request
-      axios.delete(`/customers/${id}`)
+      axios.delete(`/invoices/${id}`)
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully deleted!')
-            navigate(`/customers`)
+            navigate(`/invoices`)
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
@@ -120,10 +135,10 @@ export default function ManageCustomer() {
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            { !editable && <Link to="/customers"><FaArrowLeftLong /></Link> }
+            { !editable && <Link to="/invoices"><FaArrowLeftLong /></Link> }
             <div className="hidden md:block my-1">
-              { id ? (editable ? "Editing " : "Showing ") : "Adding a " }
-              customer
+              { id ? (editable ? "Editing " : "Showing ") : "Creating an " }
+              invoice
               { id ? ` #${id}` : "" }
             </div>
 
@@ -154,6 +169,7 @@ export default function ManageCustomer() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="app-fields">
 
+              {/*
               <div className="app-field">
                 <label>Name<span className="text-gray-500">*</span></label>
                 <input type="text" className="app-field-control"
@@ -163,39 +179,40 @@ export default function ManageCustomer() {
                   This field is required.
                 </p> }
               </div>
+              */}
 
               <div className="app-field">
-                <label>Email</label>
-                <input type="email" className="app-field-control"
-                {...register('email', { setValueAs: (v) => v ? v : undefined })} />
-              </div>
+                <label>Customer</label>
+                <select className="app-field-control" defaultValue={undefined}
+                {...register('customer.id', { required: true })}>
+                  <option hidden value={undefined}></option>
+                  {
+                    customers.map((customer) => (
+                      <option value={customer.id} key={customer.id}>{customer.name}</option>
+                    ))
+                  }
+                </select>
 
-              <div className="app-field">
-                <label>Phone</label>
-                <input type="text" className="app-field-control"
-                {...register('phone', {
-                  pattern: {
-                    value: /^[0-9-()\.\+]+$/,
-                    message: 'This field is not a valid phone number.',
-                  },
-                })} />
-
-                { errors.phone && <p className="app-field-error">
-                { errors.phone.message }
+                { errors.customer && <p className="app-field-error">
+                  This field is required.
                 </p> }
               </div>
 
               <div className="app-field">
-                <label>Address</label>
+                <label>Billing address</label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('address.id', { })}>
-                  <option value={undefined}></option>
+                {...register('billingAddress.id', { required: true })}>
+                  <option hidden value={undefined}></option>
                   {
                     addresses.map((address) => (
                       <option value={address.id} key={address.id}>{handyLongAddress(address)}</option>
                     ))
                   }
                 </select>
+
+                { errors.billingAddress && <p className="app-field-error">
+                  This field is required.
+                </p> }
               </div>
 
             </div>

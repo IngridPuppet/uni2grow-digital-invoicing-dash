@@ -1,12 +1,12 @@
 .app-show-entity {
 
   .app-controls {
-    @apply flex items-center text-gray-700;
+    @apply flex items-center text-gray-700 overflow-x-hidden;
 
     a {
       @apply flex items-center whitespace-nowrap px-4 py-2 rounded text-gray-700
                bg-gray-100 shadow-sm transition-all ease-in font-semibold
-               hover:bg-purple-700 hover:text-gray-50;
+               hover:bg-purple-700 hover:text-gray-50 mr-4;
     }
 
     .app-right {

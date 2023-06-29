@@ -41,8 +41,7 @@ export default function ManageAddress() {
   }
 
   const onSubmit: SubmitHandler<Address> = (data) => {
-    const errorMessage = 'Oops, something went wrong!\n'
-                       + 'Some fields may be required unique.'
+    const errorMessage = 'Oops, something went wrong!'
     setLoading((x) => x + 1)
 
     if (id == null) {
@@ -99,8 +98,8 @@ export default function ManageAddress() {
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            <Link to="/addresses"><FaArrowLeftLong /></Link>
-            <div className="hidden md:block ml-4">
+            { !editable && <Link to="/addresses"><FaArrowLeftLong /></Link> }
+            <div className="hidden md:block my-1">
               { id ? (editable ? "Editing " : "Showing ") : "Adding an " }
               address
               { id ? ` #${id}` : "" }
