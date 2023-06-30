@@ -65,21 +65,4 @@
     @apply text-sm py-2;
   }
 
-  .app-unready {
-
-    .app-controls {
-      @apply space-x-0;
-      .app-left {
-        @apply hidden;
-      }
-    }
-
-    .table-super-container {
-      table tbody tr {
-        @apply hover:bg-white cursor-default #{!important};
-      }
-    }
-
-  }
-
 }
