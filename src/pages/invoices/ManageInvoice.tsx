@@ -22,7 +22,11 @@ export default function ManageInvoice() {
   const location = useLocation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(0)
-  const [editable, setEditable] = useState(false)
+  const [editing, setEditing] = useState(false)
+
+  // Shortcuts
+  const creating = () => (id == null)
+  const showing = () => (id != null && !editing)
 
   // Selects. Okay, these should be autocompleted :-(
   const [items, setItems] = useState<Item[]>([])
@@ -48,13 +52,13 @@ export default function ManageInvoice() {
     loadSelects()
 
     // Add an empty item line if on creation mode
-    if ((id == null) && (getValues().relInvoiceItems.length == 0)) {
+    if ((creating()) && (getValues().relInvoiceItems.length == 0)) {
       manageInventory.onAppend()
     }
 
     // Wait synchronously for selects to load before attempting to load current entity
     // if any. This works around a "bug" in react-hook-form.
-    while (loading > 0); (id != null) && load()
+    while (loading > 0); (!creating()) && load()
   }, [location.key])
 
   const load = () => {
@@ -160,7 +164,7 @@ export default function ManageInvoice() {
 
     // Emit requests
 
-    if (id == null) {
+    if (creating()) {
       // Send a create request
       axios.post('/invoices', data)
         .then((response) => {
@@ -177,7 +181,7 @@ export default function ManageInvoice() {
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully updated!')
-            setEditable(false); load()
+            setEditing(false); load()
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
@@ -206,14 +210,13 @@ export default function ManageInvoice() {
 
   return (
     <>
-      <main className={"container mx-auto p-8 app-show-entity " +
-                       (id != null ? (editable ? "app-editable" : "app-showing") : "app-creation")}>
+      <main className={"container mx-auto p-8 app-manage-entity " + (showing() ? "app-showing" : "")}>
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            { !editable && <Link to="/invoices"><FaArrowLeftLong /></Link> }
+            { !editing && <Link to="/invoices"><FaArrowLeftLong /></Link> }
             <div className="hidden md:block my-1">
-              { id ? (editable ? "Editing " : "Showing ") : "Creating an " }
+              { id ? (editing ? "Editing " : "Showing ") : "Creating an " }
               invoice
               { id ? ` #${id}` : "" }
             </div>
@@ -227,13 +230,13 @@ export default function ManageInvoice() {
 
             <div className="app-right">
               {
-                (id != null && !editable) &&
+                showing() &&
                   <>
                     <button className="app-control-print" onClick={handlePrint}>
                       <FaPrint /> Print
                     </button>
 
-                    <button onClick={() => setEditable(true)}>
+                    <button onClick={() => setEditing(true)}>
                       <FaPencil /> Edit
                     </button>
 
@@ -250,7 +253,7 @@ export default function ManageInvoice() {
             <div className="app-fields">
 
               {
-                !(id == null) && <>
+                !(creating()) && <>
                   <div className="app-field">
                     <label>Number</label>
                     <input type="text" className="app-field-control"
@@ -269,10 +272,10 @@ export default function ManageInvoice() {
               <div className="app-field">
                 <label>
                   Customer
-                  { (id == null) && <span className="text-gray-500">*</span>}
+                  { (creating()) && <span className="text-gray-500">*</span>}
                 </label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('customer.id', { required: (id == null), onChange: manageInventory.onCustomerChange })}>
+                {...register('customer.id', { required: (creating()), onChange: manageInventory.onCustomerChange })}>
                   <option hidden value={undefined}></option>
                   {
                     customers.map((customer) => (
@@ -289,10 +292,10 @@ export default function ManageInvoice() {
               <div className="app-field">
                 <label>
                   Billing address
-                  { (id == null) && <span className="text-gray-500">*</span>}
+                  { (creating()) && <span className="text-gray-500">*</span>}
                 </label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('billingAddress.id', { required: (id == null) })}>
+                {...register('billingAddress.id', { required: (creating()) })}>
                   <option hidden value={undefined}></option>
                   {
                     addresses.map((address) => (
@@ -327,7 +330,7 @@ export default function ManageInvoice() {
 
                     <div className="app-field col-span-2 flex items-center">
                       {
-                        (id == null || editable) &&
+                        (!showing()) &&
                           <button type="button" onClick={manageInventory.onRemove(index)}>
                             <FaCircleXmark />
                           </button>
@@ -361,7 +364,7 @@ export default function ManageInvoice() {
               <div className="grid grid-cols-4 gap-x-4 mt-4 app-inventory app-inventory-end">
                 <div className="col-span-2">
                   {
-                    (id == null || editable) &&
+                    (!showing()) &&
                       <button type="button" onClick={manageInventory.onAppend}>
                         <FaCirclePlus />Add
                       </button>
@@ -381,15 +384,15 @@ export default function ManageInvoice() {
               <div className="flex-grow">&nbsp;</div>
 
               {
-                editable &&
+                editing &&
                   <button className="px-4 app-control-cancel ml-auto"
-                          onClick={ () => {setEditable(false); load();} }>
+                          onClick={ () => {setEditing(false); load();} }>
                     Cancel
                   </button>
               }
 
               {
-                (id == null || editable) &&
+                (!showing()) &&
                   <button type="submit"><FaFloppyDisk /> Save</button>
               }
             </div>
@@ -400,7 +403,7 @@ export default function ManageInvoice() {
 
       <div className="hidden">
         <div ref={(el) => (printable = el)}>
-          <PrintableInvoice invoice={ (id == null) ? null : getValues() } />
+          <PrintableInvoice invoice={ (creating()) ? null : getValues() } />
         </div>
       </div>
     </>

@@ -19,7 +19,11 @@ export default function ManageCustomer() {
   const navigate = useNavigate()
   const location = useLocation()
   const [loading, setLoading] = useState(0)
-  const [editable, setEditable] = useState(false)
+  const [editing, setEditing] = useState(false)
+
+  // Shortcuts
+  const creating = () => (id == null)
+  const showing = () => (id != null && !editing)
 
   // Selects. Okay, these should be autocompleted :-(
   const [addresses, setAddresses] = useState<Address[]>([])
@@ -35,7 +39,7 @@ export default function ManageCustomer() {
     // if any. This works around a "bug" in
     // react-hook-form.
     while (loading > 0);
-    ;(id != null) && load()
+    ;(!creating()) && load()
   }, [location.key])
 
   const load = () => {
@@ -73,7 +77,7 @@ export default function ManageCustomer() {
       delete data.address
     }
 
-    if (id == null) {
+    if (creating()) {
       // Send a create request
       axios.post('/customers', data)
         .then((response) => {
@@ -90,7 +94,7 @@ export default function ManageCustomer() {
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully updated!')
-            setEditable(false); load()
+            setEditing(false); load()
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
@@ -119,14 +123,13 @@ export default function ManageCustomer() {
 
   return (
     <>
-      <main className={"container mx-auto p-8 app-show-entity " +
-                       (id != null ? (editable ? "app-editable" : "app-showing") : "app-creation")}>
+      <main className={"container mx-auto p-8 app-manage-entity " + (showing() ? "app-showing" : "")}>
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            { !editable && <Link to="/customers"><FaArrowLeftLong /></Link> }
+            { !editing && <Link to="/customers"><FaArrowLeftLong /></Link> }
             <div className="hidden md:block my-1">
-              { id ? (editable ? "Editing " : "Showing ") : "Adding a " }
+              { id ? (editing ? "Editing " : "Showing ") : "Adding a " }
               customer
               { id ? ` #${id}` : "" }
             </div>
@@ -140,9 +143,9 @@ export default function ManageCustomer() {
 
             <div className="app-right">
               {
-                (id != null && !editable) &&
+                showing() &&
                   <>
-                    <button onClick={() => setEditable(true)}>
+                    <button onClick={() => setEditing(true)}>
                       <FaPencil /> Edit
                     </button>
 
@@ -208,15 +211,15 @@ export default function ManageCustomer() {
               <div className="flex-grow">&nbsp;</div>
 
               {
-                editable &&
+                editing &&
                   <button className="px-4 app-control-cancel ml-auto"
-                          onClick={ () => {setEditable(false); load();} }>
+                          onClick={ () => {setEditing(false); load();} }>
                     Cancel
                   </button>
               }
 
               {
-                (id == null || editable) &&
+                (!showing()) &&
                   <button type="submit"><FaFloppyDisk /> Save</button>
               }
             </div>

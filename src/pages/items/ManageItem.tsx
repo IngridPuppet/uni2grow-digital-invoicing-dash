@@ -18,13 +18,17 @@ export default function ManageItem() {
   const navigate = useNavigate()
   const location = useLocation()
   const [loading, setLoading] = useState(0)
-  const [editable, setEditable] = useState(false)
+  const [editing, setEditing] = useState(false)
+
+  // Shortcuts
+  const creating = () => (id == null)
+  const showing = () => (id != null && !editing)
 
   // React hook form
   const { register, handleSubmit, reset, formState: { errors } } = useForm<Item>()
 
   useEffect(() => {
-    ;(id != null) && load()
+    ;(!creating()) && load()
   }, [location.key])
 
   const load = () => {
@@ -45,7 +49,7 @@ export default function ManageItem() {
                        + 'Some fields may be required unique.'
     setLoading((x) => x + 1)
 
-    if (id == null) {
+    if (creating()) {
       // Send a create request
       axios.post('/items', data)
         .then((response) => {
@@ -62,7 +66,7 @@ export default function ManageItem() {
         .then((response) => {
           if (response.status == 200) {
             toast.success('Successfully updated!')
-            setEditable(false); load()
+            setEditing(false); load()
           }
         })
         .catch(() => { toast.error(errorMessage, {duration: 12e3}) })
@@ -91,14 +95,13 @@ export default function ManageItem() {
 
   return (
     <>
-      <main className={"container mx-auto p-8 app-show-entity " +
-                       (id != null ? (editable ? "app-editable" : "app-showing") : "app-creation")}>
+      <main className={"container mx-auto p-8 app-manage-entity " + (showing() ? "app-showing" : "")}>
         <div className="max-w-xl mx-auto">
 
           <div className="app-controls mb-4">
-            { !editable && <Link to="/items"><FaArrowLeftLong /></Link> }
+            { !editing && <Link to="/items"><FaArrowLeftLong /></Link> }
             <div className="hidden md:block my-1">
-              { id ? (editable ? "Editing " : "Showing ") : "Adding an " }
+              { id ? (editing ? "Editing " : "Showing ") : "Adding an " }
               item
               { id ? ` #${id}` : "" }
             </div>
@@ -111,9 +114,9 @@ export default function ManageItem() {
 
             <div className="app-right">
               {
-                (id != null && !editable) &&
+                showing() &&
                   <>
-                    <button onClick={() => setEditable(true)}>
+                    <button onClick={() => setEditing(true)}>
                       <FaPencil /> Edit
                     </button>
 
@@ -155,15 +158,15 @@ export default function ManageItem() {
               <div className="flex-grow">&nbsp;</div>
 
               {
-                editable &&
+                editing &&
                   <button className="px-4 app-control-cancel ml-auto"
-                          onClick={ () => {setEditable(false); load();} }>
+                          onClick={ () => {setEditing(false); load();} }>
                     Cancel
                   </button>
               }
 
               {
-                (id == null || editable) &&
+                (!showing()) &&
                   <button type="submit"><FaFloppyDisk /> Save</button>
               }
             </div>
