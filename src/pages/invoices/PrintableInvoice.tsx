@@ -74,14 +74,13 @@ export default function PrintableInvoice({invoice}: PrintableInvoiceProps) {
           </div>
 
           {
-            invoice.relInvoiceItems?.map((x) =>
-              x.item.name && // silly trick
-                <div key={x.id} className="grid grid-cols-5 gap-4 px-4 py-2 even:bg-gray-200 text-xs app-inventory-item">
-                  <div className="col-span-2 font-semibold">{ x.item.name }</div>
-                  <div className="col-span-1 text-right">{ x.quantity }</div>
-                  <div className="col-span-1 text-right">${ x.priceOfRecord }</div>
-                  <div className="col-span-1 text-right">${ handyMoney(x.quantity * x.priceOfRecord) }</div>
-                </div>
+            invoice.relInvoiceItems?.map((x) => x.id && // avoid null keys
+              <div key={x.id} className="grid grid-cols-5 gap-4 px-4 py-2 even:bg-gray-200 text-xs app-inventory-item">
+                <div className="col-span-2 font-semibold">{ x.item.name }</div>
+                <div className="col-span-1 text-right">{ x.quantity }</div>
+                <div className="col-span-1 text-right">${ x.priceOfRecord }</div>
+                <div className="col-span-1 text-right">${ handyMoney(x.quantity * x.priceOfRecord) }</div>
+              </div>
             )
           }
         </div>
