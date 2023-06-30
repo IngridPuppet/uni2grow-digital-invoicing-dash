@@ -182,7 +182,7 @@ export default function ManageCustomer() {
                 <input type="text" className="app-field-control"
                 {...register('phone', {
                   pattern: {
-                    value: /^[0-9-()\.\+]+$/,
+                    value: /^([0-9-()\.\+ ])+$/,
                     message: 'This field is not a valid phone number.',
                   },
                 })} />
