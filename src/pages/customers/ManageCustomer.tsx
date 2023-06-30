@@ -69,7 +69,7 @@ export default function ManageCustomer() {
     setLoading((x) => x + 1)
 
     // Set whole object to null if address unset
-    if (data.address.id == "") {
+    if (!data.address.id) {
       delete data.address
     }
 

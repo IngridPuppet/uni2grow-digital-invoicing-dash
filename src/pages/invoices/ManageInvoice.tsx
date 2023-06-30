@@ -105,8 +105,10 @@ export default function ManageInvoice() {
 
     onRemove(index: number)  {
       return () => {
-        remove(index)
-        this.totalize()
+        if (getValues().relInvoiceItems.length > 1) {
+          remove(index)
+          this.totalize()
+        }
       }
     },
 
@@ -148,11 +150,11 @@ export default function ManageInvoice() {
 
     // Prune data
 
-    if (data.customer.id == "") {
+    if (!data.customer.id) {
       delete data.customer
     }
 
-    if (data.billingAddress.id == "") {
+    if (!data.billingAddress.id) {
       delete data.billingAddress
     }
 
@@ -265,9 +267,12 @@ export default function ManageInvoice() {
               }
 
               <div className="app-field">
-                <label>Customer<span className="text-gray-500">*</span></label>
+                <label>
+                  Customer
+                  { (id == null) && <span className="text-gray-500">*</span>}
+                </label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('customer.id', { required: true, onChange: manageInventory.onCustomerChange })}>
+                {...register('customer.id', { required: (id == null), onChange: manageInventory.onCustomerChange })}>
                   <option hidden value={undefined}></option>
                   {
                     customers.map((customer) => (
@@ -282,9 +287,12 @@ export default function ManageInvoice() {
               </div>
 
               <div className="app-field">
-                <label>Billing address<span className="text-gray-500">*</span></label>
+                <label>
+                  Billing address
+                  { (id == null) && <span className="text-gray-500">*</span>}
+                </label>
                 <select className="app-field-control" defaultValue={undefined}
-                {...register('billingAddress.id', { required: true })}>
+                {...register('billingAddress.id', { required: (id == null) })}>
                   <option hidden value={undefined}></option>
                   {
                     addresses.map((address) => (
@@ -310,7 +318,7 @@ export default function ManageInvoice() {
               <div className="grid grid-cols-4 gap-x-4 mt-2 app-inventory">
                 <div className="col-span-2"><label>Item</label></div>
                 <div className=""><label>Quantity</label></div>
-                <div className=""><label>Price</label></div>
+                <div className=""><label>Unit price</label></div>
               </div>
 
               {
