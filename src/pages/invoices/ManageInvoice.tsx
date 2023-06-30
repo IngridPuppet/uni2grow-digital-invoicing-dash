@@ -403,7 +403,7 @@ export default function ManageInvoice() {
 
       <div className="hidden">
         <div ref={(el) => (printable = el)}>
-          <PrintableInvoice invoice={ (creating()) ? null : getValues() } />
+          <PrintableInvoice invoice={ (creating()) ? null : watch() } />
         </div>
       </div>
     </>
